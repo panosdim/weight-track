@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+<head>
+    <title>Weight Track</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/fontello.min.css">
+    <link rel="stylesheet" href="css/spectre.min.css">
+    <link rel="stylesheet" href="css/wt.min.css">
+
+    <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32"/>
+    <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16"/>
+</head>
+<body>
+<div id="tstMessage" class="snackbar">
+</div>
+
+<div id="sctLogin" class="card center">
+    <div class="card-header">
+        <h2 class="card-title text-center">Weight Track</h2>
+    </div>
+    <div class="card-body">
+        <form id="frmLogin">
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    <input class="form-input" id="email" name="email" type="email" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="pass">Password</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
+                    <input class="form-input" id="pass" name="password" type="password" required/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button id="btnLogin" form="frmLogin" class="btn btn-primary"><i class="fa fa-sign-in" aria-hidden="true"></i>
+            Login
+        </button>
+        <button id="btnRegister" form="frmRegister" class="btn pull-right"><i class="fa fa-sign-in" aria-hidden="true"></i>
+            Register
+        </button>
+    </div>
+</div>
+<div class="container">
+    <div class="columns">
+        <div id="sctMain" class="column col-md-12 col-lg-12 col-8 col-xs-12 col-sm-12 centered">
+            <h2 class="text-center">Weight Track</h2>
+            <div class="container">
+                <div class="columns">
+                    <div class="column col-10">
+                        <div id="navBar">
+                            <ul class="tab">
+                                <li class="tab-item active">
+                                    <a id="mnuDashboard" href="#"><i class="fa fa-tachometer fa-fw"
+                                                                     aria-hidden="true"></i>&nbsp;
+                                        Dashboard</a>
+                                </li>
+                                <li class="tab-item">
+                                    <a id="mnuMeasures" href="#"><i class="fa fa-table fa-fw" aria-hidden="true"></i>&nbsp;
+                                        Measures</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <button id="btnLogout" class="btn mt-10 pull-right btn-primary"><i class="fa fa-sign-out"
+                                                                                           aria-hidden="true"></i>
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="sctDashboard">
+                <div class="container">
+                    <div class="columns">
+                        <div class="column col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">User Info</h4>
+                                    <div class="divider"></div>
+                                    <h4 id="lblUser" class="card-meta text-bold"></h4>
+                                    <h4 id="lblEmail" class="card-meta"></h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="input-group">
+                                        <span class="input-group-addon">Height</span>
+                                        <input class="form-input" id="txtHeight" name="weight" type="number"
+                                               placeholder="Enter your height"
+                                               min="0" max="270" required/>
+                                        <span class="input-group-addon">cm</span>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <button id="btnUpdate" class="btn"><i
+                                            class="fa fa-pencil-square-o" aria-hidden="true"></i> Update
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title text-center">Body Mass Index</h4>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>BMI</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr class="bmi-underweight">
+                                            <td>Underweight</td>
+                                            <td>&lt; 18.5</td>
+                                        </tr>
+                                        <tr class="bmi-normal">
+                                            <td>Normal weight</td>
+                                            <td>18.5 &dash; 24.9</td>
+                                        </tr>
+                                        <tr class="bmi-overweight">
+                                            <td>Overweight</td>
+                                            <td>25 &dash; 29.9</td>
+                                        </tr>
+                                        <tr class="bmi-obesity">
+                                            <td>Obesity</td>
+                                            <td>&gE; 30</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="text-center">
+                                        <span id="lblBMI" class="label text-bold">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">Weight Track</h4>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="weightChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="sctMeasures">
+                <div class="container">
+                    <div class="columns">
+                        <div class="column col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Add New</h4>
+                                </div>
+                                <div class="card-body">
+                                    <form id="frmAddNew">
+                                        <div class="form-group">
+                                            <label class="form-label" for="date">Date</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-calendar fa-lg"
+                                                                                   aria-hidden="true"></i></span>
+                                                <input class="form-input" id="date" name="date" type="date" required/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label" for="weight">Weight</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="icon-scale icon"></i></span>
+                                                <input class="form-input" id="weight" name="weight" type="number"
+                                                       min="0" max="150" step="0.1" required/>
+                                                <span class="input-group-addon">kg</span>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="card-footer">
+                                    <button id="btnAddNew" form="frmAddNew" class="btn"><i
+                                            class="fa fa-plus-circle" aria-hidden="true"></i> Add
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column col-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4 class="card-title">Previous Measures</h4>
+                                    <button id="btnDelete" class="btn"><i class="fa fa-trash"
+                                                                          aria-hidden="true"></i> Delete
+                                    </button>
+                                    <button id="btnSelectAll" class="btn"><i class="fa fa-check-square-o"
+                                                                             aria-hidden="true"></i> Select
+                                        All
+                                    </button>
+                                    <button id="btnDeselectAll" class="btn"><i class="fa fa fa-square-o"
+                                                                               aria-hidden="true"></i>
+                                        Deselect
+                                        All
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <table id="tblMeasures"
+                                           class="table table-striped table-hover tooltip tooltip-bottom"
+                                           data-tooltip="Click on rows to select and delete">
+                                        <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Weight</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Javascript -->
+<script src="js/Chart.min.js"></script>
+<script src="js/wt.min.js"></script>
+</body>
+</html>
