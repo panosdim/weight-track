@@ -1,34 +1,8 @@
 <?php
 
-/*
- * Copyright (C) 2015 padi
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 session_start();
-
-//TODO: Update with new PDO functions
-require_once 'db_connection.php';
-
-echo json_encode(
-    array(
-        "status" => "error",
-        "msg_title" => "Registration is close for now.",
-        "msg_info" => "Please try again later."
-    ));
-exit();
+require_once 'database.php';
+require('autoload.php');
 
 // Define Helper functions
 define('ALGO', '$2a');
@@ -44,54 +18,68 @@ function create_hash($password)
     return crypt($password, ALGO . COST . '$' . unique_salt());
 }
 
-// Define variables and set to empty values
-$email = $password = $first_name = $last_name = "";
+$secret = '6LdoxAcUAAAAAIM3gSKuvy9V6mEfp74ZyuIRlvK0';
+$recaptcha = new \ReCaptcha\ReCaptcha($secret);
+$resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_ADDR']);
+if ($resp->isSuccess()) {
+    // Define variables and set to empty values
+    $email = $password = $firstName = $lastName = "";
+    $height = 0;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
-    $password = filter_input(INPUT_POST, "password", FILTER_SANITIZE_STRING);
-    $first_name = filter_input(INPUT_POST, "first_name", FILTER_SANITIZE_STRING);
-    $last_name = filter_input(INPUT_POST, "last_name", FILTER_SANITIZE_STRING);
-}
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email = filter_input(INPUT_POST, "regEmail", FILTER_SANITIZE_EMAIL);
+        $password = filter_input(INPUT_POST, "regPassword", FILTER_SANITIZE_STRING);
+        $firstName = filter_input(INPUT_POST, "regFirstName", FILTER_SANITIZE_STRING);
+        $lastName = filter_input(INPUT_POST, "regLastName", FILTER_SANITIZE_STRING);
+        $height = filter_input(INPUT_POST, "regHeight", FILTER_SANITIZE_NUMBER_INT);
+    }
 
-// Check if user already exists
-if ($fpdo->from('users')
-        ->select(NULL)
-        ->select('email')
-        ->where('email =  ?', $email)
-        ->fetch() !== false
-) {
-    // Inform user that registration was not successful as user already exists.
-    echo json_encode(
-        array(
+    // Check if user already exists
+    $stmt = $db->prepare(
+        'SELECT email FROM users WHERE email = ?'
+    );
+    if ($stmt->execute([$email])) {
+        $query = $stmt->fetch();
+
+        if ($query == false) {
+            // Insert user in the table
+            $stmt = $db->prepare(
+                'INSERT INTO `users` (`email`, `password`, `first_name`, `last_name`, `height`) VALUES (?, ?, ?, ?, ?)'
+            );
+
+            if ($stmt->execute([$email, create_hash($password), $firstName, $lastName, $height])) {
+                echo json_encode([
+                    "status" => "success",
+                    "message" => "Registration was successful. You can now proceed with login."
+                ]);
+            } else {
+                // DB interaction was not successful. Inform user with message.
+                echo json_encode([
+                    "status" => "error",
+                    "message" => "Problem executing statement in DB. Try again later."
+                ]);
+            }
+        } else {
+            // Registration was not successful. Inform user with message.
+            echo json_encode([
+                "status" => "error",
+                "message" => "Registration was not successful. User with same email already exists."
+            ]);
+        }
+    } else {
+        // DB interaction was not successful. Inform user with message.
+        echo json_encode([
             "status" => "error",
-            "msg_title" => "Registration was not successful.",
-            "msg_info" => "User with same email already exists."
-        ));
+            "message" => "Problem executing statement in DB. Try again later."
+        ]);
+    }
+} else {
+    $errors = $resp->getErrorCodes();
+    echo json_encode([
+        "status" => "error",
+        "message" => "Captcha verification failed",
+        "error" => $errors
+    ]);
 
     exit();
-}
-
-// Insert user in the table
-$values = array(
-    'email' => $email,
-    'password' => create_hash($password),
-    'first_name' => $first_name,
-    'last_name' => $last_name
-);
-
-if ($fpdo->insertInto('users', $values)->execute() === false) {
-    echo json_encode(
-        array(
-            "status" => "error",
-            "msg_title" => "Registration was not successful.",
-            "msg_info" => "Insertion to database failed. Please try again."
-        ));
-} else {
-    echo json_encode(
-        array(
-            "status" => "success",
-            "msg_title" => "Registration was successful.",
-            "msg_info" => "You can now proceed with login."
-        ));
 }

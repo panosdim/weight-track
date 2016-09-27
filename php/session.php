@@ -1,8 +1,4 @@
 <?php
-/**
- * Copyright (c) 2016 Panagiotis Dimopoulos - All Rights Reserved
- * Email: panosdim@gmail.com
- */
 
 session_start();
 

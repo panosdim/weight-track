@@ -1,10 +1,5 @@
 <?php
 
-/**
- * Copyright (c) 2016 Panagiotis Dimopoulos - All Rights Reserved
- * Email: panosdim@gmail.com
- */
-
 session_start();
 require_once 'database.php';
 
@@ -36,7 +31,7 @@ if ($stmt->execute([$email])) {
         if (check_password($query['password'], $password)) {
             // Authentication successful - Set session
             echo json_encode([
-                "status" => "success",
+                "status" => "info",
                 "message" => "Login was successful."
             ]);
             $_SESSION['userId'] = $query['id'];

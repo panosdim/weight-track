@@ -1,8 +1,4 @@
 <?php
-/**
- * Copyright (c) 2016 Panagiotis Dimopoulos - All Rights Reserved
- * Email: panosdim@gmail.com
- */
 
 // Connect to MySQL server
 // TODO: Update with server settings

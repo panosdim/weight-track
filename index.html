@@ -11,12 +11,13 @@
     <link rel="stylesheet" href="css/fontello.min.css">
     <link rel="stylesheet" href="css/spectre.min.css">
     <link rel="stylesheet" href="css/wt.min.css">
+    <link rel="stylesheet" href="css/notifications.css">
 
     <link rel="icon" type="image/png" href="favicon-32x32.png" sizes="32x32"/>
     <link rel="icon" type="image/png" href="favicon-16x16.png" sizes="16x16"/>
 </head>
 <body>
-<div id="tstMessage" class="snackbar">
+<div id="ntfContainer" class="notification-container">
 </div>
 
 <div id="sctLogin" class="card center">
@@ -40,14 +41,72 @@
                 </div>
             </div>
         </form>
+        <form id="frmRegister">
+            <div class="form-group">
+                <label class="form-label" for="regEmail">Email</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-user" aria-hidden="true"></i></span>
+                    <input class="form-input" id="regEmail" name="regEmail" type="email" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="regPassword">Password</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
+                    <input class="form-input" id="regPassword" name="regPassword" type="password" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="regPasswordRepeat">Password Repeat</label>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></span>
+                    <input class="form-input" id="regPasswordRepeat" name="regPasswordRepeat" type="password" required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="regFirstName">First Name</label>
+                <div class="input-group">
+                    <input class="form-input" id="regFirstName" name="regFirstName" type="text" pattern="[a-zA-Z]+"
+                           required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="regLastName">Last Name</label>
+                <div class="input-group">
+                    <input class="form-input" id="regLastName" name="regLastName" type="text" pattern="[a-zA-Z]+"
+                           required/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="regHeight">Height in cm</label>
+                <div class="input-group">
+                    <input class="form-input" id="regHeight" name="regHeight" type="number" min="0" max="270"/>
+                </div>
+            </div>
+            <div class="g-recaptcha" data-sitekey="6LdoxAcUAAAAAEWXI7UQIbL6mS8bwbvNeAKHuj6s"></div>
+        </form>
     </div>
     <div class="card-footer">
-        <button id="btnLogin" form="frmLogin" class="btn btn-primary"><i class="fa fa-sign-in" aria-hidden="true"></i>
-            Login
-        </button>
-        <button id="btnRegister" form="frmRegister" class="btn pull-right"><i class="fa fa-sign-in" aria-hidden="true"></i>
-            Register
-        </button>
+        <div id="btnsLogin">
+            <button id="btnLogin" form="frmLogin" class="btn btn-primary"><i class="fa fa-sign-in"
+                                                                             aria-hidden="true"></i>
+                Login
+            </button>
+            <button id="btnRegister" form="frmLogin" class="btn pull-right"><i class="fa fa-user-plus"
+                                                                               aria-hidden="true"></i>
+                Register
+            </button>
+        </div>
+        <div id="btnsRegister">
+            <button id="btnSave" form="frmRegister" class="btn btn-primary"><i class="fa fa-floppy-o"
+                                                                               aria-hidden="true"></i>
+                Save
+            </button>
+            <button id="btnCancel" form="frmRegister" class="btn pull-right"><i class="fa fa-arrow-left"
+                                                                                aria-hidden="true"></i>
+                Back
+            </button>
+        </div>
     </div>
 </div>
 <div class="container">
@@ -232,6 +291,7 @@
     </div>
 </div>
 <!-- Javascript -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script src="js/Chart.min.js"></script>
 <script src="js/wt.min.js"></script>
 </body>

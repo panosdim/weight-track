@@ -6,6 +6,7 @@ It shows in a chart your weight fluctuations and it also calculates your current
 * [Spectre CSS](https://github.com/picturepan2/spectre)
 * [Chart.js](http://www.chartjs.org/)
 * [FontAwesome](http://fontawesome.io/get-started/)
+* [reCAPTCHA](https://www.google.com/recaptcha/intro/index.html)
 
 ## Back End Technologies ##
 * MySQL

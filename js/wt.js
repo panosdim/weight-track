@@ -7,17 +7,24 @@
 
     // DOM elements
     var btnAddNew = document.getElementById('btnAddNew');
+    var btnCancel = document.getElementById('btnCancel');
     var btnDelete = document.getElementById('btnDelete');
     var btnDeselectAll = document.getElementById('btnDeselectAll');
     var btnLogin = document.getElementById('btnLogin');
     var btnLogout = document.getElementById('btnLogout');
+    var btnRegister = document.getElementById('btnRegister');
+    var btnSave = document.getElementById('btnSave');
     var btnSelectAll = document.getElementById('btnSelectAll');
     var btnUpdate = document.getElementById('btnUpdate');
+
+    var btnsLogin = document.getElementById('btnsLogin');
+    var btnsRegister = document.getElementById('btnsRegister');
 
     var ctx = document.getElementById("weightChart");
 
     var frmAddNew = document.getElementById('frmAddNew');
     var frmLogin = document.getElementById('frmLogin');
+    var frmRegister = document.getElementById('frmRegister');
 
     var lblBMI = document.getElementById('lblBMI');
     var lblEmail = document.getElementById('lblEmail');
@@ -27,6 +34,7 @@
     var mnuMeasures = document.getElementById('mnuMeasures');
 
     var navBar = document.getElementById('navBar');
+    var ntfContainer = document.getElementById("ntfContainer");
 
     var sctDashboard = document.getElementById('sctDashboard');
     var sctLogin = document.getElementById('sctLogin');
@@ -34,7 +42,6 @@
     var sctMeasures = document.getElementById('sctMeasures');
 
     var tblMeasures = document.getElementById('tblMeasures');
-    var tstMessage = document.getElementById('tstMessage');
 
     var txtHeight = document.getElementById('txtHeight');
 
@@ -96,6 +103,8 @@
     // DOM initializations
     sctMeasures.style.display = 'none';
     btnDelete.classList.add('disabled');
+    frmRegister.style.display = 'none';
+    btnsRegister.style.display = 'none';
 
     // ----------------------------------------------
     // Event Listeners
@@ -117,7 +126,7 @@
                     // Show message
                     displayMessage(resp);
 
-                    if (resp.status === 'success') {
+                    if (resp.status === 'info') {
                         sctLogin.style.display = 'none';
                         sctMain.style.display = '';
                         mnuDashboard.click();
@@ -148,7 +157,7 @@
             if (this.status >= 200 && this.status < 400) {
                 // Success!
                 displayMessage({
-                    'status': 'success',
+                    'status': 'info',
                     'message': 'Logged out successfully.'
                 });
                 sctLogin.style.display = '';
@@ -163,6 +172,61 @@
                 });
             }
         };
+    });
+
+    // Register
+    btnRegister.addEventListener('click', function (event) {
+        event.preventDefault();
+        frmLogin.style.display = 'none';
+        btnsLogin.style.display = 'none';
+        frmRegister.style.display = '';
+        btnsRegister.style.display = '';
+    });
+
+    // Cancel Registration
+    btnCancel.addEventListener('click', function (event) {
+        event.preventDefault();
+        frmLogin.style.display = '';
+        btnsLogin.style.display = '';
+        frmRegister.style.display = 'none';
+        btnsRegister.style.display = 'none';
+    });
+
+    // Save
+    btnSave.addEventListener('click', function (event) {
+        event.preventDefault();
+
+        if (checkFormValidity(frmRegister)) {
+            ajax.open('POST', 'php/register.php', true);
+            ajax.send(new FormData(frmRegister));
+            ajax.onload = function () {
+                var resp = {};
+                if (this.status >= 200 && this.status < 400) {
+                    // Success!
+                    resp = JSON.parse(this.responseText);
+
+                    // Show message
+                    displayMessage(resp);
+
+                    if (resp.status === 'success') {
+                        sctLogin.style.display = 'none';
+                        frmLogin.style.display = '';
+                        btnsLogin.style.display = '';
+                        frmRegister.style.display = 'none';
+                        btnsRegister.style.display = 'none';
+
+                        clearForm(frmRegister);
+                    }
+                } else {
+                    // We reached our target server, but it returned an error
+                    resp = {
+                        'status': 'error',
+                        'message': 'Error contacting server.'
+                    };
+                    displayMessage(resp);
+                }
+            };
+        }
     });
 
     // Nav Bar
@@ -484,26 +548,55 @@
      * @param {string} result.status The type of message.
      */
     function displayMessage(result) {
+        // Clear previous notification
+        ntfContainer.innerHTML = '';
+
+        // Create the notification element
+        var notification = document.createElement('div');
+        notification.classList.add('notification');
+
+        // Create the icon element
+        var icon = document.createElement('div');
+        icon.classList.add('notification-icon');
+
+        // Modify notification according to message type
+        switch (result.status) {
+            case 'info':
+                notification.classList.add('notification-info');
+                icon.innerHTML = '<span><span class="fa fa-info-circle"></span></span>';
+                break;
+            case 'success':
+                notification.classList.add('notification-success');
+                icon.innerHTML = '<span><span class="fa fa-check"></span></span>';
+                break;
+            case 'error':
+                notification.classList.add('notification-error');
+                icon.innerHTML = '<span><span class="fa fa-exclamation-triangle"></span></span>';
+                break;
+        }
+
+        // Create the message element
+        var message = document.createElement('div');
+        message.classList.add('notification-message');
+        message.innerHTML = result.message;
+
+        // Append elements to notification container
+        notification.appendChild(icon);
+        notification.appendChild(message);
+        ntfContainer.appendChild(notification);
+
+
         // Remove previous message
         clearTimeout(msgTimeout);
-        tstMessage.classList.remove('hidden');
-        tstMessage.classList.remove('visible');
 
-        // Set the background color of message according to status
-        if (result.status === 'success') {
-            tstMessage.classList.add('success');
-            tstMessage.classList.remove('danger');
-        } else {
-            tstMessage.classList.remove('success');
-            tstMessage.classList.add('danger');
-        }
-        tstMessage.innerHTML = '<i class="fa fa-info-circle fa-lg" aria-hidden="true"></i> ' + result.message;
-        tstMessage.classList.add('visible');
+        // Show notification
+        ntfContainer.firstElementChild.classList.remove('notification-hidden');
+        ntfContainer.firstElementChild.classList.add('notification-show');
 
-        // After 3 seconds, remove the show class from DIV
+        // After 3 seconds, hide the notification
         msgTimeout = setTimeout(function () {
-            tstMessage.classList.remove('visible');
-            tstMessage.classList.add('hidden');
+            ntfContainer.firstElementChild.classList.remove('notification-show');
+            ntfContainer.firstElementChild.classList.add('notification-hidden');
         }, 3000);
     }
 
