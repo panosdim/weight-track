@@ -209,7 +209,6 @@
                     displayMessage(resp);
 
                     if (resp.status === 'success') {
-                        sctLogin.style.display = 'none';
                         frmLogin.style.display = '';
                         btnsLogin.style.display = '';
                         frmRegister.style.display = 'none';

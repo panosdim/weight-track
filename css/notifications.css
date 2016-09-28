@@ -81,7 +81,7 @@
 }
 
 .notification-message {
-  word-break: break-all;
+  word-break: keep-all;
   padding: 10px 30px 10px 40px;
 }
 
